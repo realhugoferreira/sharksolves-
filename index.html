@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SharkSolves | Growth Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- React Dependencies -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel for in-browser compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #08090E;
+      }
+      /* Custom scrollbar for webkit */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #08090E;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1f2937;
+        border-radius: 5px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #374151;
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-presets="env,react,typescript">
+        const { useState, useEffect, useRef } = React;
+
+        // --- ICONS COMPONENT ---
+        const CheckCircleIcon = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        );
+
+        const ArrowRightIcon = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+        );
+
+        const ChartBarIcon = (props) => (
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+            </svg>
+        );
+
+        const RocketIcon = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+            </svg>
+        );
+
+        const AdjustmentsIcon = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 13.5V3.75m0 9.75a1.5 1.5 0 010 3m0-3a1.5 1.5 0 000 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 010 3m0-3a1.5 1.5 0 000 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 010 3m0-3a1.5 1.5 0 000 3m0 9.75V10.5" />
+            </svg>
+        );
+
+        const LightBulbIcon = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-1.97h1.83c.597 0 1.07-.49 1.07-1.09 0-.596-.473-1.09-1.07-1.09H12v-1.97c0-.597-.473-1.09-1.07-1.09-.597 0-1.07.493-1.07 1.09v1.97H8.03c-.597 0-1.07.494-1.07 1.09 0 .596.473 1.09 1.07 1.09h1.83V18m1.53 3.25A1.5 1.5 0 0112 21.25 1.5 1.5 0 0110.47 21.25" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 2.25a8.25 8.25 0 00-8.25 8.25c0 2.96 1.58 5.56 3.96 6.97.68.38 1.13 1.09 1.13 1.88h6.32c0-.79.45-1.5 1.13-1.88 2.38-1.41 3.96-4.01 3.96-6.97a8.25 8.25 0 00-8.25-8.25z" />
+            </svg>
+        );
+
+        const MenuIcon = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+        );
+
+        const XIcon = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        );
+
+        const InstagramIcon = (props) => (
+            <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z" />
+            </svg>
+        );
+
+        const TikTokIcon = (props) => (
+             <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+            </svg>
+        );
+
+        const LinkedInIcon = (props) => (
+             <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+            </svg>
+        );
+
+        // --- HEADER COMPONENT ---
+        const navLinks = [
+            { href: "#inicio", label: "Início" },
+            { href: "#sobre", label: "Sobre" },
+            { href: "#servicos", label: "Serviços" },
+            { href: "#processo", label: "Processo" },
+            { href: "#requisitos", label: "Requisitos" },
+        ];
+
+        const Header = () => {
+            const [isOpen, setIsOpen] = useState(false);
+            const [isScrolled, setIsScrolled] = useState(false);
+
+            useEffect(() => {
+                const handleScroll = () => {
+                    setIsScrolled(window.scrollY > 10);
+                };
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const handleLinkClick = (e, href) => {
+                e.preventDefault();
+                const targetElement = document.querySelector(href);
+                if (targetElement) {
+                    const headerOffset = 80;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            
+                    window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                    });
+                }
+                setIsOpen(false);
+            };
+
+            return (
+                <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isOpen ? 'bg-[#08090E]/90 backdrop-blur-lg border-b border-white/10' : 'bg-transparent'}`}>
+                    <div className="container mx-auto px-6">
+                        <div className="flex items-center justify-between h-20">
+                            <a href="#inicio" onClick={(e) => handleLinkClick(e, "#inicio")} className="flex items-center text-2xl font-extrabold text-white tracking-wider uppercase italic">
+                                <span className="leading-none">SharkSolves</span>
+                            </a>
+
+                            <nav className="hidden md:flex items-center space-x-8">
+                                {navLinks.map((link) => (
+                                    <a key={link.href} href={link.href} onClick={(e) => handleLinkClick(e, link.href)} className="text-gray-300 hover:text-white transition-colors font-medium">
+                                        {link.label}
+                                    </a>
+                                ))}
+                            </nav>
+
+                            <div className="hidden md:block">
+                                <a href="#" className="bg-white text-black font-bold px-6 py-2.5 rounded-lg transition-all hover:bg-gray-200 hover:scale-105">
+                                    Agendar Chamada
+                                </a>
+                            </div>
+
+                            <div className="md:hidden">
+                                <button onClick={() => setIsOpen(!isOpen)} className="text-white">
+                                    {isOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Mobile Menu */}
+                    <div className={`md:hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-screen py-4' : 'max-h-0'} overflow-hidden bg-[#08090E]`}>
+                        <nav className="flex flex-col items-center space-y-4 px-6">
+                            {navLinks.map((link) => (
+                                <a key={link.href} href={link.href} onClick={(e) => handleLinkClick(e, link.href)} className="text-gray-300 hover:text-white transition-colors text-lg">
+                                    {link.label}
+                                </a>
+                            ))}
+                            <a href="#" className="w-full text-center mt-4 bg-white text-black font-bold px-6 py-3 rounded-lg transition-colors hover:bg-gray-200">
+                                Agendar Chamada
+                            </a>
+                        </nav>
+                    </div>
+                </header>
+            );
+        };
+
+        // --- HERO COMPONENT ---
+        const Hero = () => {
+            return (
+                <section id="inicio" className="relative py-24 md:py-32 lg:py-40 overflow-hidden">
+                    <div 
+                        className="absolute inset-0 opacity-40"
+                        style={{
+                        backgroundImage: 'conic-gradient(from 0deg at 50% 50%, #08090E, #1e3a8a, #08090E)'
+                        }}
+                    ></div>
+                    
+                    <div className="container mx-auto px-6 relative z-10 text-center">
+                        <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 backdrop-blur-sm">
+                            <span className="text-blue-400 font-semibold text-sm tracking-wide uppercase">Estratégia de Crescimento Digital</span>
+                        </div>
+                        
+                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight mb-8">
+                            Transformo seguidores em clientes e negócios <br className="hidden md:block"/> em <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">marcas relevantes</span>.
+                        </h1>
+                        
+                        <p className="max-w-2xl mx-auto text-lg md:text-xl text-gray-400 mb-10 leading-relaxed">
+                            </p>
+                        
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <a 
+                                href="#" 
+                                className="w-full sm:w-auto bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all duration-300 hover:bg-blue-500 hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] hover:-translate-y-1"
+                            >
+                                Pedir Orçamento
+                            </a>
+                            <a 
+                                href="#processo" 
+                                className="w-full sm:w-auto bg-transparent border border-gray-700 text-white font-bold text-lg px-8 py-4 rounded-xl transition-all duration-300 hover:bg-white/5 hover:border-white/30"
+                            >
+                                Ver o Método
+                            </a>
+                        </div>
+                    </div>
+                    <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#08090E] to-transparent"></div>
+                </section>
+            );
+        };
+
+        // --- ABOUT COMPONENT ---
+        const About = () => {
+            return (
+                <section id="sobre" className="py-16 md:py-24 bg-[#08090E] border-y border-white/5">
+                    <div className="container mx-auto px-6">
+                        <div className="max-w-5xl mx-auto">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                                <div className="order-2 md:order-1">
+                                    <h2 className="text-3xl font-bold text-white mb-6">Quem Eu Sou</h2>
+                                    <div className="space-y-4 text-gray-400 text-lg leading-relaxed">
+                                        <p>
+                                            Sou <strong className="text-white">Hugo Ferreira</strong>, especialista em crescimento digital para criadores e marcas.
+                                        </p>
+                                        <p>
+                                            Nos últimos anos desenvolvi um sistema simples e direto:
+                                        </p>
+                                        <ul className="space-y-2 pl-4 border-l-2 border-blue-500 my-6">
+                                            <li className="text-white font-medium">Criar conteúdo que funciona</li>
+                                            <li className="text-white font-medium">Publicar com estratégia</li>
+                                            <li className="text-white font-medium">Ajustar com dados</li>
+                                            <li className="text-white font-medium">Escalar os resultados</li>
+                                        </ul>
+                                        <p>
+                                            Não vendo fórmulas mágicas, atalhos ou promessas vazias. Vendo <strong className="text-white">direção, execução e crescimento real</strong>.
+                                        </p>
+                                        <p>
+                                            Se estás comprometido com o teu projeto — eu ajudo-te a acelerar.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="order-1 md:order-2 relative flex justify-center">
+                                    <div className="w-full max-w-sm aspect-[3/4] rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 border border-white/10 relative overflow-hidden group shadow-2xl shadow-blue-900/20">
+                                        <div className="absolute inset-0 bg-blue-600/10 group-hover:bg-blue-600/20 transition-all duration-500 mix-blend-overlay z-10"></div>
+                                        
+                                        {/* Placeholder Image logic - User needs to save their file as hugo.jpg */}
+                                        <img 
+                                            src="https://i.postimg.cc/Hn3L9wqf/IMG-3783-2.jpg" 
+                                            alt="Hugo Ferreira" 
+                                            className="w-full h-full object-cover object-top relative z-0"
+                                            onError={(e) => {
+                                                e.target.style.display = 'none';
+                                                e.target.nextSibling.style.display = 'flex';
+                                            }}
+                                        />
+                                        
+                                        {/* Fallback if image not found */}
+                                        <div className="hidden absolute inset-0 flex-col items-center justify-center text-center p-6 z-0">
+                                            <RocketIcon className="w-20 h-20 text-white/20 mb-4" />
+                                            <p className="text-gray-500 text-sm">Coloca a foto 'hugo.jpg' na mesma pasta</p>
+                                        </div>
+
+                                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#08090E] via-[#08090E]/80 to-transparent z-20">
+                                            <h3 className="text-xl font-bold text-white">Hugo Ferreira</h3>
+                                            <p className="text-blue-400 text-sm font-medium tracking-wide uppercase">CEO & Estratega</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // --- SERVICES COMPONENT (Formerly Pricing) ---
+        const ServiceCard = ({ title, subtitle, features, cta, recommended = false }) => {
+            return (
+                <div className={`flex flex-col p-8 rounded-2xl border transition-all duration-300 hover:-translate-y-2 ${recommended ? 'bg-blue-900/10 border-blue-500/50 shadow-[0_0_30px_rgba(37,99,235,0.15)]' : 'bg-[#12141c] border-white/10 hover:border-white/20'}`}>
+                    {recommended && (
+                        <div className="self-start bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
+                            MAIS PROCURADO
+                        </div>
+                    )}
+                    <h3 className="text-2xl font-bold text-white mb-2">{title}</h3>
+                    <p className="text-gray-400 text-sm mb-6 min-h-[40px]">{subtitle}</p>
+                    
+                    <div className="flex-grow space-y-3 mb-8">
+                        {features.map((feature, idx) => (
+                            <div key={idx} className="flex items-start">
+                                <CheckCircleIcon className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0 mt-0.5" />
+                                <span className="text-gray-300 text-sm">{feature}</span>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <a href="#" className={`w-full py-4 rounded-xl font-bold text-center transition-all ${recommended ? 'bg-blue-600 text-white hover:bg-blue-500' : 'bg-white text-black hover:bg-gray-200'}`}>
+                        {cta}
+                    </a>
+                </div>
+            );
+        };
+
+        const Services = () => {
+            return (
+                <section id="servicos" className="py-16 md:py-24 bg-[#08090E]">
+                    <div className="container mx-auto px-6">
+                        <div className="text-center max-w-2xl mx-auto mb-16">
+                            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Como Posso Ajudar</h2>
+                            <p className="text-gray-400">
+                                Existem 3 formas principais de trabalharmos juntos, dependendo do teu nível, tempo disponível e objetivos.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            {/* Card 1: DFY */}
+                            <ServiceCard 
+                                title="Gestão e Crescimento"
+                                subtitle="Para criadores e negócios que querem delegar e focar no que fazem melhor."
+                                features={[
+                                    "Estratégia Completa",
+                                    "Criação de Roteiros",
+                                    "Gravação no local",
+                                    "Edição dinâmica",
+                                    "Publicação Estratégica",
+                                    "Contacto constante"
+                                ]}
+                                cta="Pedir Orçamento"
+                                recommended={true}
+                            />
+
+                            {/* Card 2: DWY */}
+                            <ServiceCard 
+                                title="Estratégia + Acompanhamento"
+                                subtitle="Para quem quer crescer com método, direção e correção técnica."
+                                features={[
+                                    "Plano Estratégico Mensal",
+                                    "Roteiros Prontos",
+                                    "Edição dinâmica",
+                                    "Revisão de Conteúdo",
+                                    "Publicação Estratégica",
+                                    "Contacto constante"
+                                ]}
+                                cta="Começar Agora"
+                            />
+
+                            {/* Card 3: 1-1 */}
+                            <ServiceCard 
+                                title="Consultoria 1-1"
+                                subtitle="Sessão individual para destravar bloqueios e definir um plano claro."
+                                features={[
+                                    "Sessão de 60 Minutos",
+                                    "Diagnóstico Imediato",
+                                    "Tira-dúvidas Técnico",
+                                    "Envio de Plano de Ação Prático"
+                                ]}
+                                cta="Vamos Conversar"
+                            />
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // --- CASE STUDY COMPONENT ---
+        const CaseStudy = () => {
+            return (
+                <section className="py-16 md:py-24 bg-[#0c1020] border-y border-white/5 relative overflow-hidden">
+                     {/* Background decoration */}
+                    <div className="absolute top-0 right-0 p-12 opacity-5">
+                        <RocketIcon className="w-64 h-64 text-blue-500" />
+                    </div>
+                    
+                    <div className="container mx-auto px-6 relative z-10">
+                        <div className="max-w-5xl mx-auto bg-[#191D28] rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
+                            <div className="grid grid-cols-1 md:grid-cols-2">
+                                <div className="p-8 md:p-12 flex flex-col justify-center">
+                                    <div className="inline-flex items-center space-x-2 text-blue-400 font-bold tracking-wider uppercase text-sm mb-6">
+                                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                                        <span>Caso de Sucesso</span>
+                                    </div>
+                                    
+                                    <h2 className="text-3xl font-extrabold text-white mb-4">
+                                        De 643 a 2700+ Seguidores num Nicho de Elite
+                                    </h2>
+                                    
+                                    <p className="text-gray-400 mb-6 leading-relaxed">
+                                        A <strong className="text-white">LFC Stables</strong>, dedicada à equitação e venda de cavalos em Portugal, precisava de mais do que apenas "likes". Precisava de leads qualificadas.
+                                    </p>
+                                    
+                                    <div className="space-y-4 mb-8">
+                                        <div className="flex items-start">
+                                            <div className="mt-1 mr-3 bg-green-500/10 p-1 rounded-full">
+                                                <CheckCircleIcon className="w-4 h-4 text-green-500" />
+                                            </div>
+                                            <p className="text-gray-300 text-sm"><strong className="text-white">O Desafio:</strong> Mercado extremamente nichado e exigente.</p>
+                                        </div>
+                                        <div className="flex items-start">
+                                            <div className="mt-1 mr-3 bg-green-500/10 p-1 rounded-full">
+                                                <CheckCircleIcon className="w-4 h-4 text-green-500" />
+                                            </div>
+                                            <p className="text-gray-300 text-sm"><strong className="text-white">A Solução:</strong> Conteúdo estratégico de venda e posicionamento de autoridade.</p>
+                                        </div>
+                                        <div className="flex items-start">
+                                            <div className="mt-1 mr-3 bg-green-500/10 p-1 rounded-full">
+                                                <CheckCircleIcon className="w-4 h-4 text-green-500" />
+                                            </div>
+                                            <p className="text-gray-300 text-sm"><strong className="text-white">O Resultado:</strong> Dezenas de leads de compra de cavalos em poucos meses.</p>
+                                        </div>
+                                    </div>
+
+                                    <a href="https://www.instagram.com/lfcstables/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-white font-bold hover:text-blue-400 transition-colors group">
+                                        <InstagramIcon className="w-5 h-5 mr-2" />
+                                        Ver Perfil no Instagram
+                                        <ArrowRightIcon className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                    </a>
+                                </div>
+                                
+                                <div className="bg-blue-600/5 p-8 md:p-12 flex flex-col justify-center items-center text-center border-t md:border-t-0 md:border-l border-white/10 relative">
+                                     {/* Stats */}
+                                     <div className="grid grid-cols-1 gap-8 w-full">
+                                        <div className="bg-[#08090E] p-6 rounded-2xl border border-white/10">
+                                            <p className="text-gray-500 text-sm uppercase tracking-wider mb-1">Crescimento</p>
+                                            <p className="text-4xl font-black text-white text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">+319%</p>
+                                            <p className="text-xs text-gray-500 mt-2">Seguidores Reais</p>
+                                        </div>
+                                        
+                                        <div className="bg-[#08090E] p-6 rounded-2xl border border-white/10">
+                                            <p className="text-gray-500 text-sm uppercase tracking-wider mb-1">Resultado</p>
+                                            <p className="text-3xl font-black text-white">Dezenas</p>
+                                            <p className="text-xs text-gray-500 mt-2">Leads de Venda (Cavalos)</p>
+                                        </div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // --- PROCESS COMPONENT (Formerly Benefits) ---
+        const processSteps = [
+            {
+                icon: ChartBarIcon,
+                step: "01",
+                title: "Diagnóstico",
+                description: "Analisamos onde estás, o que está a travar o teu crescimento e o que falta para atingires o próximo nível."
+            },
+            {
+                icon: LightBulbIcon,
+                step: "02",
+                title: "Direção",
+                description: "Definimos um plano de conteúdo adaptado ao teu objetivo, nicho e audiência alvo."
+            },
+            {
+                icon: AdjustmentsIcon,
+                step: "03",
+                title: "Execução",
+                description: "Criação, edição e publicação. Ajustamos a rota com base no feedback real da plataforma."
+            },
+            {
+                icon: RocketIcon,
+                step: "04",
+                title: "Escala",
+                description: "Crescimento previsível. Identificamos o que funciona e duplicamos a intensidade."
+            }
+        ];
+
+        const Process = () => {
+            return (
+                <section id="processo" className="py-16 md:py-24 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[#10121A]"></div>
+                    <div className="container mx-auto px-6 relative z-10">
+                        <div className="text-center max-w-3xl mx-auto mb-16">
+                            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+                                O Meu Processo
+                            </h2>
+                            <p className="text-gray-400">
+                                Um sistema validado para transformar visualizações em valor.
+                            </p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {processSteps.map((item, index) => (
+                                <div key={index} className="bg-[#191D28] p-6 rounded-2xl border border-white/10 hover:border-blue-500/30 transition-colors group">
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div className="p-3 bg-blue-600/10 rounded-lg text-blue-500 group-hover:text-blue-400 transition-colors">
+                                            <item.icon className="w-6 h-6" />
+                                        </div>
+                                        <span className="text-4xl font-black text-white/5 group-hover:text-white/10 transition-colors">{item.step}</span>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                                    <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // --- REQUIREMENTS COMPONENT (Formerly FAQ) ---
+        const Requirements = () => {
+            return (
+                <section id="requisitos" className="py-16 md:py-24 bg-[#08090E]">
+                    <div className="container mx-auto px-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                            <div>
+                                <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6">
+                                    Antes de Agendar...
+                                </h2>
+                                <p className="text-gray-400 text-lg mb-8">
+                                    Este processo não é para todos. Para garantirmos resultados, preciso que estejas alinhado com a nossa filosofia.
+                                </p>
+                                
+                                <div className="space-y-6">
+                                    <div className="flex items-start">
+                                        <div className="mt-1 mr-4 bg-green-500/10 p-1 rounded-full">
+                                            <CheckCircleIcon className="w-5 h-5 text-green-500" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-white font-bold">Criadores sérios ou negócios com visão</h4>
+                                            <p className="text-gray-500 text-sm">Procuramos parceiros a longo prazo.</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start">
+                                        <div className="mt-1 mr-4 bg-green-500/10 p-1 rounded-full">
+                                            <CheckCircleIcon className="w-5 h-5 text-green-500" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-white font-bold">Disposição para executar</h4>
+                                            <p className="text-gray-500 text-sm">A estratégia só funciona se for aplicada.</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start">
+                                        <div className="mt-1 mr-4 bg-green-500/10 p-1 rounded-full">
+                                            <CheckCircleIcon className="w-5 h-5 text-green-500" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-white font-bold">Foco em crescimento real</h4>
+                                            <p className="text-gray-500 text-sm">Não vendemos "hacks" ou seguidores falsos.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="bg-[#12141c] p-8 rounded-2xl border border-white/10 text-center">
+                                <h3 className="text-2xl font-bold text-white mb-4">Pronto para crescer?</h3>
+                                <p className="text-gray-400 mb-8">
+                                    Se queres crescer com estratégia, consistência e resultados previsíveis — vamos falar.
+                                </p>
+                                <a href="#" className="block w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-gray-200 transition-colors">
+                                    Pedir Orçamento
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // --- RESULTS/QUOTE COMPONENT ---
+        const ResultsQuote = () => {
+            return (
+                <section className="py-20 bg-gradient-to-b from-[#08090E] to-[#0c1020] border-t border-white/5">
+                    <div className="container mx-auto px-6 text-center">
+                        <blockquote className="max-w-4xl mx-auto">
+                            <p className="text-2xl md:text-4xl font-serif italic text-gray-300 leading-relaxed">
+                                "Os meus clientes não crescem por acaso — crescem porque existe um sistema por trás."
+                            </p>
+                            <footer className="mt-8 text-blue-500 font-bold tracking-widest uppercase text-sm">
+                                - Hugo Ferreira
+                            </footer>
+                        </blockquote>
+                    </div>
+                </section>
+            );
+        };
+
+        // --- FOOTER COMPONENT ---
+        const Footer = () => {
+            const socialLinks = [
+                { Icon: InstagramIcon, href: "#" },
+                { Icon: TikTokIcon, href: "#" },
+                { Icon: LinkedInIcon, href: "#" },
+            ];
+
+            return (
+                <footer className="bg-[#050608] border-t border-white/10 py-12">
+                    <div className="container mx-auto px-6">
+                        <div className="flex flex-col md:flex-row justify-between items-center">
+                            <div className="mb-6 md:mb-0 text-center md:text-left">
+                                <span className="text-xl font-extrabold text-white uppercase italic tracking-wider">SharkSolves</span>
+                                <p className="text-gray-500 text-sm mt-2">Crescimento Digital Estratégico.</p>
+                            </div>
+
+                            <div className="text-gray-600 text-sm">
+                                &copy; {new Date().getFullYear()} SharkSolves.
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            );
+        };
+
+        // --- APP COMPONENT ---
+        const App = () => {
+            return (
+                <div className="bg-[#08090E] text-white overflow-x-hidden">
+                    <Header />
+                    <main>
+                        <Hero />
+                        <About />
+                        <Services />
+                        <CaseStudy />
+                        <ResultsQuote />
+                        <Process />
+                        <Requirements />
+                    </main>
+                    <Footer />
+                </div>
+            );
+        };
+
+        // --- ROOT MOUNT ---
+        const rootElement = document.getElementById('root');
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(
+            <React.StrictMode>
+                <App />
+            </React.StrictMode>
+        );
+    </script>
+</body>
+</html>
